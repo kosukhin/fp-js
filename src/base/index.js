@@ -1,15 +1,12 @@
-import * as R from "ramda";
+import { compose as ramdaCompose } from "ramda";
 
-export const high = (theThing) => {
+const high = (theThing) => {
   if (theThing?.typeThing) {
     return theThing;
   }
 
   const doThenFactory = (doThen) => {
     let theRes = null;
-
-    // console.log("doThen", doThen);
-    // console.log("thing", theThing);
 
     if (theThing instanceof Promise) {
       theRes = high(theThing.then(doThen));
@@ -21,10 +18,17 @@ export const high = (theThing) => {
 
     return theRes;
   };
+
   return doThenFactory;
 };
 
+/**
+ * Специфический compose который делает из
+ * обычных функций - функции высшего порядка,
+ * в которых происходит доп обработка возможного
+ * поведения, например обработка Promise
+ */
 export const compose = (...cbs) => {
-  const applier = R.compose(...cbs.map((cb) => high(cb)));
-  return (parameter) => applier(high(parameter))
+  const applier = ramdaCompose(...cbs.map((cb) => high(cb)));
+  return (parameter) => applier(high(parameter));
 };
