@@ -1,5 +1,7 @@
 import { compose as ramdaCompose } from "ramda";
 
+const RESULT_SYMBOL = Symbol("result");
+
 const high = (theThing) => {
   if (theThing?.typeThing) {
     return theThing;
@@ -7,6 +9,10 @@ const high = (theThing) => {
 
   const doThenFactory = (doThen) => {
     let theRes = null;
+
+    if (doThen === RESULT_SYMBOL) {
+      return theThing;
+    }
 
     if (theThing instanceof Promise) {
       theRes = high(theThing.then(doThen));
@@ -22,6 +28,10 @@ const high = (theThing) => {
   return doThenFactory;
 };
 
+export const result = (doThenFactory) => {
+  return doThenFactory(RESULT_SYMBOL);
+};
+
 /**
  * Специфический compose который делает из
  * обычных функций - функции высшего порядка,
@@ -30,5 +40,5 @@ const high = (theThing) => {
  */
 export const compose = (...cbs) => {
   const applier = ramdaCompose(...cbs.map((cb) => high(cb)));
-  return (parameter) => applier(high(parameter));
+  return (...params) => applier(high(...params));
 };
