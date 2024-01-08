@@ -7,9 +7,9 @@
 выражение на создание 3х параллельных запросов.
 
 Результат работы
-```
-result: 21
-============= End of Incrementor ===========
+```json
+result: 12
+============= End of [Add eleven] ===========
 result: [
   { userId: 1, id: 1, title: 'delectus aut autem', completed: false },
   {
@@ -21,7 +21,7 @@ result: [
   { userId: 1, id: 3, title: 'fugiat veniam minus', completed: false },
   undefined
 ]
-============= End of Parallel ===========
+============= End of [Parallel requests] ===========
 result: [
   { userId: 1, id: 1, title: 'delectus aut autem', completed: false },
   {
@@ -39,5 +39,5 @@ result: [
     completed: false
   }
 ]
-============= End of Five Todos ===========
+============= End of [Five Todos] ===========
 ```
