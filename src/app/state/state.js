@@ -55,10 +55,7 @@ const doRequest = compose(
   request,
   partial(stateGet, [["args", "0"]])
 );
-const afterRequest = stateChange(
-  "isLoading",
-  () => false
-);
+const afterRequest = stateChange("isLoading", () => false);
 const reactiveRequest = compose(
   stateChange("results", doRequest, afterRequest),
   state({
@@ -67,11 +64,13 @@ const reactiveRequest = compose(
   })
 );
 
-const rstate = reactiveRequest("https://jsonplaceholder.typicode.com/todos");
+const rstate = result(
+  reactiveRequest("https://jsonplaceholder.typicode.com/todos")
+);
 
-console.log('Синхронный вызов rstate - пусто');
-console.log(result(rstate).get());
+console.log("Синхронный вызов rstate - пусто");
+console.log(rstate.get());
 setTimeout(() => {
-  console.log('\nОбращение через секунду к rstate - есть реузльтаты');
-  console.log(result(rstate).get());
+  console.log("\nОбращение через секунду к rstate - есть реузльтаты");
+  console.log(rstate.get());
 }, 1000);

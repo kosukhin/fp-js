@@ -2,7 +2,7 @@ import { compose as ramdaCompose } from "ramda";
 
 const RESULT_SYMBOL = Symbol("result");
 
-const high = (theThing) => {
+const highlify = (theThing) => {
   if (theThing?.typeThing) {
     return theThing;
   }
@@ -15,9 +15,9 @@ const high = (theThing) => {
     }
 
     if (theThing instanceof Promise) {
-      theRes = high(theThing.then(doThen));
+      theRes = highlify(theThing.then(doThen));
     } else {
-      theRes = high(doThen(theThing));
+      theRes = highlify(doThen(theThing));
     }
 
     theRes.typeThing = true;
@@ -39,6 +39,6 @@ export const result = (doThenFactory) => {
  * поведения, например обработка Promise
  */
 export const compose = (...cbs) => {
-  const applier = ramdaCompose(...cbs.map((cb) => high(cb)));
-  return (...params) => applier(high(...params));
+  const applier = ramdaCompose(...cbs.map((cb) => highlify(cb)));
+  return (...params) => applier(highlify(...params));
 };
