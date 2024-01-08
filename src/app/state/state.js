@@ -20,7 +20,6 @@ const state =
       },
     };
   };
-
 const slice = (start, end, arr) => arr.slice(start, end);
 const stateEffect = (cb) => (result) => {
   cb(result);
@@ -31,7 +30,6 @@ const id = (v) => v;
 const stateGet = (pathArr, state) => path(pathArr, state.get());
 const stateUnwrap = (state) => state.get();
 const request = async (url) => {
-  console.log("req", url);
   const response = await fetch(url);
   return await response.json();
 };
@@ -50,26 +48,30 @@ const stateChange = (saveTo, fnComposed, afterChange) => (state) => {
   return compose(() => state)();
 };
 
+// Функции - композиции
 const stateDebug = compose(showResult, stateUnwrap);
 const doRequest = compose(
-  partial(slice, [0, 5]),
+  partial(slice, [0, 3]),
   request,
   partial(stateGet, [["args", "0"]])
 );
 const afterRequest = stateChange(
   "isLoading",
-  compose(() => false)
+  () => false
 );
-const reactiveLogic = compose(
+const reactiveRequest = compose(
   stateChange("results", doRequest, afterRequest),
   state({
     results: [],
     isLoading: true,
   })
 );
-const rstate = reactiveLogic("https://jsonplaceholder.typicode.com/todos");
 
+const rstate = reactiveRequest("https://jsonplaceholder.typicode.com/todos");
+
+console.log('Синхронный вызов rstate - пусто');
 console.log(result(rstate).get());
 setTimeout(() => {
+  console.log('\nОбращение через секунду к rstate - есть реузльтаты');
   console.log(result(rstate).get());
 }, 1000);
